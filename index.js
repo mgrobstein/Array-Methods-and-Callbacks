@@ -4,17 +4,20 @@ const { fifaData } = require('./fifa.js')
 
 /* 🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀 Task 1: 🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀
 Practice accessing data by console.log-ing the following pieces of data note, you may want to filter the data first 😉*/
-
+const finals2014 = fifaData.filter(function(item){
+    return item.Year === 2014 && item.Stage === 'Final';
+});
+console.log('task 1', finals2014);
 //(a) Home Team name for 2014 world cup final
-
+console.log('task 1a', finals2014[0]['Home Team Name'])
 //(b) Away Team name for 2014 world cup final
-
+console.log('task 1b', finals2014[0]['Home Team Name'])
 //(c) Home Team goals for 2014 world cup final
-
+console.log('task 1c', finals2014[0]['Home Team Goals'])
 //(d) Away Team goals for 2014 world cup final
-
+console.log('task 1d', finals2014[0]['Away Team Goals'])
 //(e) Winner of 2014 world cup final */
-
+console.log('task 1d', finals2014[0]['Win conditions'])
 
 /* 🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀 Task 2: 🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀 
 Use getFinals to do the following:
@@ -24,9 +27,15 @@ Use getFinals to do the following:
 hint - you should be looking at the stage key inside of the objects
 */
 
-function getFinals(/* code here */) {
-   /* code here */
+function getFinals(array) {
+   const newArray = array.filter(function(item){
+       return item.Stage === 'Final';
+   });
+   return newArray;
 }
+
+
+
 
 
 
@@ -36,8 +45,12 @@ Use the higher-order function called getYears to do the following:
 2. Receive a callback function getFinals from task 2 
 3. Return an array called years containing all of the years in the getFinals data set*/
 
-function getYears(/* code here */) {
-    /* code here */
+function getYears(array, getFinalsCB) {
+    const years = array.map(function(item){
+        return item['Year'];
+    });
+return years;
+
 }
 
 
@@ -49,8 +62,21 @@ Use the higher-order function getWinners to do the following:
 3. Determines the winner (home or away) of each `finals` game. 
 4. Returns the names of all winning countries in an array called `winners` */ 
 
-function getWinners(/* code here */) {
-    /* code here */
+function getWinners(array, getFinalsCB) {
+    const winners = [];
+    const newerArray = getFinalsCB(array);
+
+    for (let i =0; i < newerArray.length; i++){
+    const homeScore = newerArray[i]['Home Team Goals'];
+    const awayScore = newerArray[i]['Away Team Goals'];
+    if (homeScore < awayScore){
+        winners.push(newerArray[i]['Away Team Name'])
+    }
+    else{
+        winners.push(newerArray[i]['Home Team Name'])
+    }
+}
+return winners;
 }
 
 
@@ -66,8 +92,15 @@ Use the higher-order function getWinnersByYear to do the following:
 hint: the strings returned need to exactly match the string in step 4.
  */
 
-function getWinnersByYear(/* code here */) {
-    /* code here */
+function getWinnersByYear(array, getFinalsCB, getYearsCB, getWinnersCB) {
+    const anotherArray = [];
+    const finalsArray = getFinalsCB(array);
+    for( let i = 0; i< finalsArray.length; i++){
+        const num1 = getYearsCB(array)[i]
+        const num2 = getWinnersCB(array, getFinalsCB)[i]
+    anotherArray.push(`In ${num1}, ${num2} won the world cup!`)
+    }
+    return anotherArray;
 }
 
 
@@ -82,9 +115,24 @@ Use the higher order function getAverageGoals to do the following:
  Example of invocation: getAverageGoals(getFinals(fifaData));
 */
 
-function getAverageGoals(/* code here */) {
-   /* code here */
-}
+function getAverageGoals(getFinalsCB) {
+    const lengthVariableBecauseWhyNot = getFinalsCB.length
+    // let averageHome = 0;
+    // let averageAway = 0;
+    let avgTotal = getFinalsCB.reduce(
+        (prev, cur) =>  prev + cur["Home Team Goals"] + cur["Away Team Goals"]
+    , 0) / lengthVariableBecauseWhyNot;
+    // for (let i = 0; i < lengthVariableBecauseWhyNot; i++){
+    //     const num3 = getFinalsCB[i]['Home Team Goals'];
+    //     const num4 = getFinalsCB[i]['Away Team Goals'];
+    //     averageHome = num3.reduce((previousValue, currentValue) =>
+    //     ((previousValue + currentValue))
+    //     )
+    //     averageAway = num4.reduce((previousValue, currentValue) =>
+    //     (previousValue + currentValue))
+    // }
+    return avgTotal.toFixed(2);
+      }
 
 
 
